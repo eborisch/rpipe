@@ -188,6 +188,7 @@ def check_pipe(remote):
 def deposit(args):
     # Only output on stderr
     sys.stdout = sys.stderr
+    subprocess.check_call(('rclone', 'mkdir', args.destination))
     n = 0
     flist = []
     b = 1
