@@ -175,13 +175,18 @@ def check_pipe(remote):
     cat(path.join(remote, 'rpipe.md5'), fd=buf)
     buf.seek(0)
     md = {}
+    total = False
     for l in buf:
         d = l.split()
-        if len(d) < 2 or d[1] == 'TOTAL':
+        if len(d) < 2:
             continue
-        if remote_sums[d[1]] != d[0]:
+        if d[1] == 'TOTAL':
+            total = True
+        elif remote_sums[d[1]] != d[0]:
             print("{} != {} [{}]".format(d[0], remote_sums[d[1]], d[1]))
             raise(Exception, 'Checksums do not match (current vs. saved)!')
+    if not total:
+        raise(Exception, 'Incomplete "rpipe.sum" file (missing TOTAL)')
     return buf
 
 
